@@ -108,9 +108,11 @@ func errRecover(err *error) {
 	case *net.OpError:
 		*err = driver.ErrBadConn
 	case error:
+		//lint:ignore S1040 allow this for now
 		if v == io.EOF || v.(error).Error() == "remote error: handshake failure" {
 			*err = driver.ErrBadConn
 		} else {
+			//lint:ignore S1040 allow this for now
 			*err = v
 		}
 
