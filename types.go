@@ -1,6 +1,4 @@
-//nolint:unparam
-//golint:file-ignore don't use underscores in Go names
-//lint:file-ignore don't use underscores in Go names
+//golint:file-ignore
 package gfpq
 
 type oid uint32
