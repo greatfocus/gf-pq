@@ -79,7 +79,7 @@ jobs:
       with:
         run: sec
         token: ${{ secrets.DEPLOY_ACCESS }}
-        flags: "-exclude=G104"
+        flags: "-exclude=G104,G401,G501"
 
   test:
     name: Test

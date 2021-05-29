@@ -2,7 +2,6 @@ package gfpq
 
 import (
 	"bufio"
-	//lint:ignore G501 (CWE-327) allow this for now
 	"crypto/md5"
 	"crypto/tls"
 	"database/sql"
@@ -599,7 +598,6 @@ func (rs *rows) Next(dest []driver.Value) (err error) {
 }
 
 func md5s(s string) string {
-	//lint:ignore G401 (CWE-326) allow this for now
 	h := md5.New()
 	h.Write([]byte(s))
 	return fmt.Sprintf("%x", h.Sum(nil))
