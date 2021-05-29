@@ -102,6 +102,7 @@ func errRecover(err *error) {
 		if v.Fatal() {
 			*err = driver.ErrBadConn
 		} else {
+			//lint:ignore S1040 allow this for now
 			*err = v
 		}
 	case *net.OpError:
