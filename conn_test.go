@@ -36,7 +36,9 @@ func openTestConn(t Fatalistic) *sql.DB {
 
 func TestExec(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	_, err := db.Exec("CREATE TEMP TABLE temp (a int)")
 	if err != nil {
@@ -64,7 +66,9 @@ func TestExec(t *testing.T) {
 
 func TestStatment(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	st, err := db.Prepare("SELECT 1")
 	if err != nil {
@@ -80,7 +84,9 @@ func TestStatment(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	if !r.Next() {
 		t.Fatal("expected row")
@@ -102,7 +108,9 @@ func TestStatment(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r1.Close()
+	defer func() {
+		_ = r1.Close()
+	}()
 
 	if !r1.Next() {
 		if r.Err() != nil {
@@ -123,7 +131,9 @@ func TestStatment(t *testing.T) {
 
 func TestRowsCloseBeforeDone(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	r, err := db.Query("SELECT 1")
 	if err != nil {
@@ -146,7 +156,9 @@ func TestRowsCloseBeforeDone(t *testing.T) {
 
 func TestEncodeDecode(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	q := `
 		SELECT 
@@ -171,7 +183,9 @@ func TestEncodeDecode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	if !r.Next() {
 		if r.Err() != nil {
@@ -222,19 +236,25 @@ func TestEncodeDecode(t *testing.T) {
 
 func TestNoData(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	st, err := db.Prepare("SELECT 1 WHERE true = false")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer st.Close()
+	defer func() {
+		_ = st.Close()
+	}()
 
 	r, err := st.Query()
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	if r.Next() {
 		if r.Err() != nil {
@@ -251,7 +271,9 @@ func TestPGError(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	_, err = db.Begin()
 	if err == nil {
@@ -289,7 +311,9 @@ func TestBadConn(t *testing.T) {
 
 func TestErrorOnExec(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	sql := "DO $$BEGIN RAISE unique_violation USING MESSAGE='foo'; END; $$;"
 	_, err := db.Exec(sql)
@@ -306,14 +330,18 @@ func TestErrorOnExec(t *testing.T) {
 
 func TestErrorOnQuery(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	sql := "DO $$BEGIN RAISE unique_violation USING MESSAGE='foo'; END; $$;"
 	r, err := db.Query(sql)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	if r.Next() {
 		t.Fatal("unexpected row, want error")
@@ -336,7 +364,9 @@ func TestErrorOnQuery(t *testing.T) {
 
 func TestBindError(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	_, err := db.Exec("create temp table test (i integer)")
 	if err != nil {
@@ -353,7 +383,9 @@ func TestBindError(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 }
 
 func TestParseEnviron(t *testing.T) {
@@ -377,7 +409,9 @@ func TestExecerInterface(t *testing.T) {
 
 func TestNullAfterNonNull(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	r, err := db.Query("SELECT 9::integer UNION SELECT NULL::integer")
 	if err != nil {
@@ -426,7 +460,9 @@ func BenchmarkResultParsing(b *testing.B) {
 	b.StopTimer()
 
 	db := openTestConn(b)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 	_, err := db.Exec("BEGIN")
 	if err != nil {
 		b.Fatal(err)
@@ -438,7 +474,7 @@ func BenchmarkResultParsing(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		res.Close()
+		_ = res.Close()
 	}
 }
 
@@ -451,7 +487,9 @@ func Test64BitErrorChecking(t *testing.T) {
 	}()
 
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	r, err := db.Query(`SELECT *
 FROM (VALUES (0::integer, NULL::text), (1, 'test string')) AS t;`)
@@ -460,7 +498,9 @@ FROM (VALUES (0::integer, NULL::text), (1, 'test string')) AS t;`)
 		t.Fatal(err)
 	}
 
-	defer r.Close()
+	defer func() {
+		_ = r.Close()
+	}()
 
 	for r.Next() {
 	}

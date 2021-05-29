@@ -22,7 +22,9 @@
 		conn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=verify-full", host, user, password, dbname)
 		d, err := sql.Open("postgres", conn)
 		rows, err := d.QueryRow("INSERT INTO MYTABLE(MYCOLUMN) VALUES(1),(2),(3) RETURNING ID")
-		defer rows.Close()
+		defer func() {
+			_ = rows.Close()
+		}()
 		var ids []int
 		for rows.Next() {
 			var id int

@@ -111,21 +111,6 @@ jobs:
           restore-keys: |
                         ${{ runner.os }}-go${{ matrix.go }}-release
 
-      - name: Run Unit tests.
-        run: make test-coverage
-      
-      - name: Upload Coverage report to CodeCov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{secrets.DEPLOY_ACCESS}}
-          file: ./coverage.txt
-
-      - name: Build and Test
-        run: make test
-
-      - name: Test Coverage
-        run: make test-coverage
-
   build:
     name: Build
     runs-on: ubuntu-latest 

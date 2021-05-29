@@ -9,7 +9,7 @@ import (
 func TestScanTimestamp(t *testing.T) {
 	var nt NullTime
 	tn := time.Now()
-	(&nt).Scan(tn)
+	_ = (&nt).Scan(tn)
 	if !nt.Valid {
 		t.Errorf("Expected Valid=false")
 	}
@@ -20,7 +20,7 @@ func TestScanTimestamp(t *testing.T) {
 
 func TestScanNilTimestamp(t *testing.T) {
 	var nt NullTime
-	(&nt).Scan(nil)
+	_ = (&nt).Scan(nil)
 	if nt.Valid {
 		t.Errorf("Expected Valid=false")
 	}
@@ -28,13 +28,17 @@ func TestScanNilTimestamp(t *testing.T) {
 
 func TestTimestampWithTimeZone(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	tx, err := db.Begin()
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer tx.Rollback()
+	defer func() {
+		_ = tx.Rollback()
+	}()
 
 	_, err = tx.Exec("create temp table test (t timestamp with time zone)")
 	if err != nil {
@@ -91,7 +95,9 @@ func TestTimestampWithTimeZone(t *testing.T) {
 
 func TestTimestampWithOutTimezone(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	test := func(ts, pgts string) {
 		r, err := db.Query("SELECT $1::timestamp", pgts)
@@ -135,7 +141,9 @@ func TestTimestampWithOutTimezone(t *testing.T) {
 
 func TestStringWithNul(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	hello0world := string("hello\x00world")
 	_, err := db.Query("SELECT $1::text", &hello0world)
@@ -147,7 +155,9 @@ func TestStringWithNul(t *testing.T) {
 
 func TestByteToText(t *testing.T) {
 	db := openTestConn(t)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 
 	b := []byte("hello world")
 	row := db.QueryRow("SELECT $1::text", b)
