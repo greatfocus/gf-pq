@@ -47,6 +47,9 @@ jobs:
           go get -u golang.org/x/lint/golint 
           make lint
 
+      - name: Vet
+        run: go vet ./...
+
   shadow:
     name: Shadow
     runs-on: ubuntu-latest
