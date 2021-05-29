@@ -19,8 +19,10 @@ import (
 )
 
 var (
+	// ErrSSLNotSupported error
 	ErrSSLNotSupported = errors.New("pq: SSL is not enabled on the server")
-	ErrNotSupported    = errors.New("pq: invalid command")
+	// ErrNotSupported error
+	ErrNotSupported = errors.New("pq: invalid command")
 )
 
 type drv struct{}

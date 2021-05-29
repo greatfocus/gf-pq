@@ -2,8 +2,8 @@ package gfpq
 
 type oid uint32
 
-//golint:file-ignore use underscores
-//lint:file-ignore use underscores
+//golint:file-ignore don't use underscores in Go names
+//lint:file-ignore don't use underscores in Go names
 const t_bool oid = 16
 const (
 	t_bytea                                 = 17
