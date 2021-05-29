@@ -356,6 +356,7 @@ func (cn *conn) startup(o Values) {
 }
 
 func (cn *conn) auth(r *readBuf, o Values) {
+	var t byte
 	switch code := r.int32(); code {
 	case 0:
 		// OK
@@ -364,7 +365,7 @@ func (cn *conn) auth(r *readBuf, o Values) {
 		w.string(o.Get("password"))
 		cn.send(w)
 
-		t, r := cn.recv()
+		t, r = cn.recv()
 		if t != 'R' {
 			errorf("unexpected password response: %q", t)
 		}
@@ -378,7 +379,7 @@ func (cn *conn) auth(r *readBuf, o Values) {
 		w.string("md5" + md5s(md5s(o.Get("password")+o.Get("user"))+s))
 		cn.send(w)
 
-		t, r := cn.recv()
+		t, r = cn.recv()
 		if t != 'R' {
 			errorf("unexpected password response: %q", t)
 		}

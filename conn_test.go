@@ -15,20 +15,27 @@ type Fatalistic interface {
 }
 
 func openTestConn(t Fatalistic) *sql.DB {
+	var err error
 	datname := os.Getenv("PGDATABASE")
 	sslmode := os.Getenv("PGSSLMODE")
 
 	if datname == "" {
-		os.Setenv("PGDATABASE", "pqgotest")
+		err = os.Setenv("PGDATABASE", "pqgotest")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 
 	if sslmode == "" {
-		os.Setenv("PGSSLMODE", "disable")
+		err = os.Setenv("PGSSLMODE", "disable")
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 
-	conn, err := sql.Open("postgres", "")
+	conn, cerr := sql.Open("postgres", "")
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(cerr)
 	}
 
 	return conn
@@ -379,9 +386,9 @@ func TestBindError(t *testing.T) {
 	}
 
 	// Should not get error here
-	r, err := db.Query("select * from test where i=$1", 1)
-	if err != nil {
-		t.Fatal(err)
+	r, serr := db.Query("select * from test where i=$1", 1)
+	if serr != nil {
+		t.Fatal(serr)
 	}
 	defer func() {
 		_ = r.Close()
