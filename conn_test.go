@@ -434,7 +434,7 @@ func TestNullAfterNonNull(t *testing.T) {
 		t.Fatal("expected row")
 	}
 
-	if err := r.Scan(&n); err != nil {
+	if err = r.Scan(&n); err != nil {
 		t.Fatal(err)
 	}
 
@@ -449,7 +449,7 @@ func TestNullAfterNonNull(t *testing.T) {
 		t.Fatal("expected row")
 	}
 
-	if err := r.Scan(&n); err != nil {
+	if err = r.Scan(&n); err != nil {
 		t.Fatal(err)
 	}
 

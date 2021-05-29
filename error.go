@@ -25,8 +25,10 @@ const (
 	Elog = "LOG"
 )
 
+// Error error
 type Error error
 
+// PGError interface
 type PGError interface {
 	Error() string
 	Fatal() bool
@@ -65,6 +67,7 @@ func errorf(s string, args ...interface{}) {
 	panic(Error(fmt.Errorf("pq: %s", fmt.Sprintf(s, args...))))
 }
 
+// SimplePGError struct
 type SimplePGError struct {
 	pgError
 }
