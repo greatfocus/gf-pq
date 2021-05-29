@@ -9,13 +9,20 @@ import (
 )
 
 const (
-	Efatal   = "FATAL"
-	Epanic   = "PANIC"
+	// Efatal constant
+	Efatal = "FATAL"
+	// Epanic constant
+	Epanic = "PANIC"
+	// Ewarning constant
 	Ewarning = "WARNING"
-	Enotice  = "NOTICE"
-	Edebug   = "DEBUG"
-	Einfo    = "INFO"
-	Elog     = "LOG"
+	// Enotice constant
+	Enotice = "NOTICE"
+	// Edebug constant
+	Edebug = "DEBUG"
+	// Einfo constant
+	Einfo = "INFO"
+	// Elog constant
+	Elog = "LOG"
 )
 
 type Error error
@@ -62,6 +69,7 @@ type SimplePGError struct {
 	pgError
 }
 
+// SimplePGError returns error
 func (err *SimplePGError) Error() string {
 	return "pq: " + err.Get('M')
 }

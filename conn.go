@@ -39,6 +39,7 @@ type conn struct {
 	namei int
 }
 
+// Open creates database conenction
 func Open(name string) (_ driver.Conn, err error) {
 	defer errRecover(&err)
 	defer errRecoverWithPGReason(&err)
@@ -92,12 +93,15 @@ func network(o Values) (string, string) {
 	return "tcp", host + ":" + o.Get("port")
 }
 
+// Values map
 type Values map[string]string
 
+// Set create value
 func (vs Values) Set(k, v string) {
 	vs[k] = v
 }
 
+// Get returns value
 func (vs Values) Get(k string) (v string) {
 	v = vs[k]
 	return
@@ -192,7 +196,7 @@ func (cn *conn) prepareTo(q, stmtName string) (_ driver.Stmt, err error) {
 			st.nparams = int(r.int16())
 			st.paramTyps = make([]oid, st.nparams)
 
-			for i := 0; i < st.nparams; i += 1 {
+			for i := 0; i < st.nparams; i++ {
 				st.paramTyps[i] = r.oid()
 			}
 		case 'T':

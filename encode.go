@@ -101,6 +101,7 @@ func mustParse(f string, typ oid, s []byte) time.Time {
 	return t
 }
 
+// NullTime struct
 type NullTime struct {
 	Time  time.Time
 	Valid bool // Valid is true if Time is not NULL

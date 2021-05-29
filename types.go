@@ -2,6 +2,7 @@ package gfpq
 
 type oid uint32
 
+//golint:ignore don't use underscores in Go names
 const t_bool oid = 16
 const (
 	t_bytea                                 = 17
