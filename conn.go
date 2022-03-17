@@ -311,9 +311,30 @@ func (cn *conn) ssl(o Values) {
 	tlsConf := tls.Config{}
 	switch mode := o.Get("sslmode"); mode {
 	case "require", "":
+		// We must skip TLS's own verification since it requires full
+		// verification since Go 1.3.
+		tlsConf.InsecureSkipVerify = true
+
+		// From http://www.postgresql.org/docs/current/static/libpq-ssl.html:
+		//
+		// Note: For backwards compatibility with earlier versions of
+		// PostgreSQL, if a root CA file exists, the behavior of
+		// sslmode=require will be the same as that of verify-ca, meaning the
+		// server certificate is validated against the CA. Relying on this
+		// behavior is discouraged, and applications that need certificate
+		// validation should always use verify-ca or verify-full.
+		if sslrootcert, ok := o["sslrootcert"]; ok {
+			if _, err := os.Stat(sslrootcert); err == nil {
+			} else {
+				delete(o, "sslrootcert")
+			}
+		}
+	case "verify-ca":
+		// We must skip TLS's own verification since it requires full
+		// verification since Go 1.3.
 		tlsConf.InsecureSkipVerify = true
 	case "verify-full":
-		// fall out
+		tlsConf.ServerName = o["host"]
 	case "disable":
 		return
 	default:
