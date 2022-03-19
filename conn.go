@@ -2,6 +2,7 @@ package gfpq
 
 import (
 	"bufio"
+	// nolint: golint
 	"crypto/md5"
 	"crypto/tls"
 	"database/sql"
@@ -621,6 +622,7 @@ func (rs *rows) Next(dest []driver.Value) (err error) {
 }
 
 func md5s(s string) string {
+	// nolint: golint
 	h := md5.New()
 	h.Write([]byte(s))
 	return fmt.Sprintf("%x", h.Sum(nil))
