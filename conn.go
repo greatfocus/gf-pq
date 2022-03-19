@@ -2,7 +2,6 @@ package gfpq
 
 import (
 	"bufio"
-	// NOLINT
 	"crypto/md5"
 	"crypto/tls"
 	"database/sql"

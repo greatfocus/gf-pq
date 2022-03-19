@@ -5,7 +5,6 @@ type oid uint32
 
 const t_bool oid = 16
 const (
-	// NOLINT
 	t_bytea                                 = 17
 	t_char                                  = 18
 	t_name                                  = 19
