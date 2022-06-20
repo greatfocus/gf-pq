@@ -164,9 +164,6 @@ type conn struct {
 
 	// If not nil, notifications will be synchronously sent here
 	notificationHandler func(*Notification)
-
-	// GSSAPI context
-	gss GSS
 }
 
 type syncErr struct {
@@ -1220,58 +1217,6 @@ func (cn *conn) auth(r *readBuf, o values) {
 		if r.int32() != 0 {
 			errorf("unexpected authentication response: %q", t)
 		}
-	case 7: // GSSAPI, startup
-		if newGss == nil {
-			errorf("kerberos error: no GSSAPI provider registered (import github.com/greatfocus/gf-pq/auth/kerberos if you need Kerberos support)")
-		}
-		cli, err := newGss()
-		if err != nil {
-			errorf("kerberos error: %s", err.Error())
-		}
-
-		var token []byte
-
-		if spn, ok := o["krbspn"]; ok {
-			// Use the supplied SPN if provided..
-			token, err = cli.GetInitTokenFromSpn(spn)
-		} else {
-			// Allow the kerberos service name to be overridden
-			service := "postgres"
-			if val, ok := o["krbsrvname"]; ok {
-				service = val
-			}
-
-			token, err = cli.GetInitToken(o["host"], service)
-		}
-
-		if err != nil {
-			errorf("failed to get Kerberos ticket: %q", err)
-		}
-
-		w := cn.writeBuf('p')
-		w.bytes(token)
-		cn.send(w)
-
-		// Store for GSSAPI continue message
-		cn.gss = cli
-
-	case 8: // GSSAPI continue
-
-		if cn.gss == nil {
-			errorf("GSSAPI protocol error")
-		}
-
-		b := []byte(*r)
-
-		done, tokOut, err := cn.gss.Continue(b)
-		if err == nil && !done {
-			w := cn.writeBuf('p')
-			w.bytes(tokOut)
-			cn.send(w)
-		}
-
-		// Errors fall through and read the more detailed message
-		// from the server..
 
 	case 10:
 		sc := scram.NewClient(sha256.New, o["user"], o["password"])
