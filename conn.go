@@ -32,7 +32,7 @@ var (
 	ErrInFailedTransaction       = errors.New("pq: Could not complete operation in a failed transaction")
 	ErrSSLNotSupported           = errors.New("pq: SSL is not enabled on the server")
 	ErrSSLKeyUnknownOwnership    = errors.New("pq: Could not get owner information for private key, may not be properly protected")
-	ErrSSLKeyHasWorldPermissions = errors.New("pq: Private key has world access. Permissions should be u=rw,g=r (0640) if owned by root, or u=rw (0600), or less")
+	ErrSSLKeyHasWorldPermissions = errors.New("pq: Private key has world access. Permissions should be u=rw,g=r (0600) if owned by root, or u=rw (0600), or less")
 
 	ErrCouldNotDetectUsername = errors.New("pq: Could not detect default username. Please provide one explicitly")
 

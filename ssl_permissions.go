@@ -18,12 +18,12 @@ const (
 
 	// The maximum permissions that a private key file owned by root is allowed
 	// to have. This translates to u=rw,g=r.
-	maxRootOwnedKeyPermissions os.FileMode = 0640
+	maxRootOwnedKeyPermissions os.FileMode = 0600
 )
 
 var (
 	errSSLKeyHasUnacceptableUserPermissions = errors.New("permissions for files not owned by root should be u=rw (0600) or less")
-	errSSLKeyHasUnacceptableRootPermissions = errors.New("permissions for root owned files should be u=rw,g=r (0640) or less")
+	errSSLKeyHasUnacceptableRootPermissions = errors.New("permissions for root owned files should be u=rw,g=r (0600) or less")
 )
 
 // sslKeyPermissions checks the permissions on user-supplied ssl key files.
@@ -52,7 +52,7 @@ func sslKeyPermissions(sslkey string) error {
 // If the file is owned by the same user the process is running as,
 // the file should only have 0600 (u=rw). If the file is owned by root,
 // and the group matches the group that the process is running in, the
-// permissions cannot be more than 0640 (u=rw,g=r). The file should
+// permissions cannot be more than 0600 (u=rw,g=r). The file should
 // never have world permissions.
 //
 // Returns an error when the permission check fails.
@@ -79,7 +79,7 @@ func hasCorrectPermissions(info os.FileInfo) error {
 		return ErrSSLKeyUnknownOwnership
 	}
 
-	// if the file is owned by root, we allow 0640 (u=rw,g=r) to match what
+	// if the file is owned by root, we allow 0600 (u=rw,g=r) to match what
 	// Postgres does.
 	if unixStat.Uid == rootUserID {
 		rootPermissionMask := (os.FileMode(0777) ^ maxRootOwnedKeyPermissions)

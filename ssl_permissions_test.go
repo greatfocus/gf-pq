@@ -57,7 +57,7 @@ func TestHasCorrectRootGroupPermissions(t *testing.T) {
 		{
 			expectedError: nil,
 			stat: syscall.Stat_t{
-				Mode: 0640,
+				Mode: 0600,
 				Uid:  0,
 				Gid:  currentGID,
 			},

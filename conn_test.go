@@ -180,7 +180,7 @@ func TestPgpass(t *testing.T) {
 	os.Setenv("PGPASSFILE", pgpassFile)
 	testAssert("host=/tmp", "fail", ", unexpected error %#v")
 	os.Remove(pgpassFile)
-	pgpass, err := os.OpenFile(pgpassFile, os.O_RDWR|os.O_CREATE, 0644)
+	pgpass, err := os.OpenFile(pgpassFile, os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {
 		t.Fatalf("Unexpected error writing pgpass file %#v", err)
 	}
