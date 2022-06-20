@@ -40,36 +40,36 @@ jobs:
       - name: Run golint
         run: golint ./...
 
-  test:
-    name: Test
-    strategy:
-      matrix:
-        os: [ubuntu-20.04, macos-latest, windows-latest]
-        go: ["1.18"]
-    runs-on: ${{ matrix.os }}
-    needs: [build]
-    steps:
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.18
+  # test:
+  #   name: Test
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-20.04, macos-latest, windows-latest]
+  #       go: ["1.18"]
+  #   runs-on: ${{ matrix.os }}
+  #   needs: [build]
+  #   steps:
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: 1.18
 
-      - name: Check out code
-        uses: actions/checkout@v2
+  #     - name: Check out code
+  #       uses: actions/checkout@v2
 
-      - name: Vars
-        id: vars
-        run: |
-          echo "::set-output name=version_tag::${GITHUB_REF/refs\/tags\//}"
-          echo "::set-output name=go_cache::$(go env GOCACHE)"
+  #     - name: Vars
+  #       id: vars
+  #       run: |
+  #         echo "::set-output name=version_tag::${GITHUB_REF/refs\/tags\//}"
+  #         echo "::set-output name=go_cache::$(go env GOCACHE)"
 
-      - name: Cache the build cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.vars.outputs.go_cache }}
-          key: ${{ runner.os }}-go${{ matrix.go }}-release-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-                        ${{ runner.os }}-go${{ matrix.go }}-release
+  #     - name: Cache the build cache
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ steps.vars.outputs.go_cache }}
+  #         key: ${{ runner.os }}-go${{ matrix.go }}-release-${{ hashFiles('**/go.sum') }}
+  #         restore-keys: |
+  #                       ${{ runner.os }}-go${{ matrix.go }}-release
 
-      - name: Test
-        run: go test -race -vet=off ./...
+  #     - name: Test
+  #       run: go test -race -vet=off ./...
