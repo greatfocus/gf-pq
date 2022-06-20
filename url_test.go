@@ -1,11 +1,11 @@
-package gfpq
+package pq
 
 import (
 	"testing"
 )
 
 func TestSimpleParseURL(t *testing.T) {
-	expected := "host=hostname.remote"
+	expected := "host='hostname.remote'"
 	str, err := ParseURL("postgres://hostname.remote")
 	if err != nil {
 		t.Fatal(err)
@@ -16,9 +16,21 @@ func TestSimpleParseURL(t *testing.T) {
 	}
 }
 
+func TestIPv6LoopbackParseURL(t *testing.T) {
+	expected := "host='::1' port='1234'"
+	str, err := ParseURL("postgres://[::1]:1234")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if str != expected {
+		t.Fatalf("unexpected result from ParseURL:\n+ %v\n- %v", str, expected)
+	}
+}
+
 func TestFullParseURL(t *testing.T) {
-	expected := "dbname=database host=hostname.remote password=secret port=1234 user=username"
-	str, err := ParseURL("postgres://username:secret@hostname.remote:1234/database")
+	expected := `dbname='database' host='hostname.remote' password='top secret' port='1234' user='username'`
+	str, err := ParseURL("postgres://username:top%20secret@hostname.remote:1234/database")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +48,8 @@ func TestInvalidProtocolParseURL(t *testing.T) {
 	default:
 		msg := "invalid connection protocol: http"
 		if err.Error() != msg {
-			t.Fatalf("Unexpected error message:\n+ %s\n- %s", err.Error(), msg)
+			t.Fatalf("Unexpected error message:\n+ %s\n- %s",
+				err.Error(), msg)
 		}
 	}
 }
